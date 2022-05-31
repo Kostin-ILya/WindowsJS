@@ -14009,7 +14009,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _slider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./slider */ "./src/js/slider.js");
+/* harmony import */ var _modules_slider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/slider */ "./src/js/modules/slider.js");
 /* harmony import */ var _modules_modals__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/modals */ "./src/js/modules/modals.js");
 /* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/tabs */ "./src/js/modules/tabs.js");
 
@@ -14017,7 +14017,7 @@ __webpack_require__.r(__webpack_exports__);
 
 window.addEventListener('DOMContentLoaded', () => {
   Object(_modules_modals__WEBPACK_IMPORTED_MODULE_1__["default"])();
-  Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.glazing_slider', '.glazing_block', '.glazing_content', 'active');
+  Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.glazing_slider', '.glazing_block', '.glazing_content', 'after_click');
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.decoration_slider', '.no_click', '.decoration_content > div >div', 'after_click');
 });
 
@@ -14032,7 +14032,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-const modals = () => {
+const popupModule = () => {
   const modalTimerId = setTimeout(() => {
     document.querySelector('.popup').classList.add('show');
     document.body.classList.add('overflow');
@@ -14080,67 +14080,14 @@ const modals = () => {
   bindModal('.phone_link', '.popup', '.popup .popup_close');
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (modals);
+/* harmony default export */ __webpack_exports__["default"] = (popupModule);
 
 /***/ }),
 
-/***/ "./src/js/modules/tabs.js":
-/*!********************************!*\
-  !*** ./src/js/modules/tabs.js ***!
-  \********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-const tabs = (tabsParentSelector, tabsSelector, tabsContentSelector, activeClass) => {
-  const tabsParent = document.querySelector(tabsParentSelector);
-  const tab = document.querySelectorAll(tabsSelector);
-  const tabsContent = document.querySelectorAll(tabsContentSelector);
-
-  function hideTabsContent() {
-    tabsContent.forEach(item => {
-      item.classList.add('hide');
-      item.classList.remove('show');
-    });
-    tab.forEach(item => {
-      item.classList.remove(activeClass);
-    });
-  }
-
-  function showTabsContent() {
-    let i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    tabsContent[i].classList.add('show', 'fade');
-    tabsContent[i].classList.remove('hide');
-    tab[i].classList.add(activeClass);
-  }
-
-  tabsParent.addEventListener('click', e => {
-    const {
-      target
-    } = e;
-
-    if (target && target.closest(tabsSelector)) {
-      tab.forEach((item, i) => {
-        if (target === item || target.closest(tabsSelector) === item) {
-          hideTabsContent();
-          showTabsContent(i);
-        }
-      });
-    }
-  });
-  hideTabsContent();
-  showTabsContent();
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (tabs);
-
-/***/ }),
-
-/***/ "./src/js/slider.js":
-/*!**************************!*\
-  !*** ./src/js/slider.js ***!
-  \**************************/
+/***/ "./src/js/modules/slider.js":
+/*!**********************************!*\
+  !*** ./src/js/modules/slider.js ***!
+  \**********************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -14222,6 +14169,59 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     }]
   });
 });
+
+/***/ }),
+
+/***/ "./src/js/modules/tabs.js":
+/*!********************************!*\
+  !*** ./src/js/modules/tabs.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const tabsModule = (tabsParentSelector, tabsSelector, tabsContentSelector, activeClass) => {
+  const tabsParent = document.querySelector(tabsParentSelector);
+  const tabs = document.querySelectorAll(tabsSelector);
+  const tabsContent = document.querySelectorAll(tabsContentSelector);
+
+  function hideTabsContent() {
+    tabsContent.forEach(item => {
+      item.classList.add('hide');
+      item.classList.remove('show');
+    });
+    tabs.forEach(item => {
+      item.classList.remove(activeClass);
+    });
+  }
+
+  function showTabsContent() {
+    let i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    tabsContent[i].classList.add('show', 'fade');
+    tabsContent[i].classList.remove('hide');
+    tabs[i].classList.add(activeClass);
+  }
+
+  tabsParent.addEventListener('click', e => {
+    const {
+      target
+    } = e;
+
+    if (target && target.closest(tabsSelector)) {
+      tabs.forEach((item, i) => {
+        if (target === item || target.closest(tabsSelector) === item) {
+          hideTabsContent();
+          showTabsContent(i);
+        }
+      });
+    }
+  });
+  hideTabsContent();
+  showTabsContent();
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (tabsModule);
 
 /***/ })
 

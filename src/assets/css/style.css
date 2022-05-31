@@ -515,7 +515,7 @@ textarea:focus {
   display: none;
 }
 
-.glazing .active a {
+.glazing .after_click a {
   text-decoration: none;
   color: #454545;
 }
@@ -556,14 +556,13 @@ textarea:focus {
 				background: linear-gradient(180deg, #ebebeb 0%, #ebebeb 0%, rgba(255, 255, 255, 0) 100%);*/
 }
 
-.decoration_item .no_click {
+.no_click {
   /*border: 1px solid red;*/
   height: 8rem;
   padding: 2rem 0;
   border-top: 1rem solid #f7f7f7;
 }
-
-.decoration_item .after_click {
+.after_click {
   border-top: 1rem solid #0089cd;
   height: 8rem;
   padding: 2rem 0;

@@ -1,4 +1,4 @@
-const modals = () => {
+const popupModule = () => {
   const modalTimerId = setTimeout(() => {
     document.querySelector('.popup').classList.add('show');
     document.body.classList.add('overflow');
@@ -54,4 +54,4 @@ const modals = () => {
   bindModal('.phone_link', '.popup', '.popup .popup_close');
 };
 
-export default modals;
+export default popupModule;
