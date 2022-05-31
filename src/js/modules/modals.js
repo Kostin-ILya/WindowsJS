@@ -9,15 +9,15 @@ const modals = () => {
     const modal = document.querySelector(modalSelector);
     const close = document.querySelector(closeSelector);
 
-    function closeModal(popupSelector) {
-      const popup = document.querySelector(popupSelector);
+    function closeModal(selector) {
+      const popup = document.querySelector(selector);
 
       popup.classList.remove('show');
       document.body.classList.remove('overflow');
     }
 
-    trigger.forEach((elem) => {
-      elem.addEventListener('click', (e) => {
+    trigger.forEach((item) => {
+      item.addEventListener('click', (e) => {
         if (e.target) {
           e.preventDefault();
         }
@@ -32,6 +32,7 @@ const modals = () => {
       closeModal(modalSelector);
     });
 
+    // Скрытие попапа при нажатии вне попапа
     modal.addEventListener('click', (e) => {
       if (e.target === modal) {
         closeModal(modalSelector);

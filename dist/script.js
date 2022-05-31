@@ -14010,19 +14010,23 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _slider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./slider */ "./src/js/slider.js");
-/* harmony import */ var _modules_modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/modal */ "./src/js/modules/modal.js");
+/* harmony import */ var _modules_modals__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/modals */ "./src/js/modules/modals.js");
+/* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/tabs */ "./src/js/modules/tabs.js");
+
 
 
 window.addEventListener('DOMContentLoaded', () => {
-  Object(_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])();
+  Object(_modules_modals__WEBPACK_IMPORTED_MODULE_1__["default"])();
+  Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.glazing_slider', '.glazing_block', '.glazing_content', 'active');
+  Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.decoration_slider', '.no_click', '.decoration_content > div >div', 'after_click');
 });
 
 /***/ }),
 
-/***/ "./src/js/modules/modal.js":
-/*!*********************************!*\
-  !*** ./src/js/modules/modal.js ***!
-  \*********************************/
+/***/ "./src/js/modules/modals.js":
+/*!**********************************!*\
+  !*** ./src/js/modules/modals.js ***!
+  \**********************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -14039,14 +14043,14 @@ const modals = () => {
     const modal = document.querySelector(modalSelector);
     const close = document.querySelector(closeSelector);
 
-    function closeModal(popupSelector) {
-      const popup = document.querySelector(popupSelector);
+    function closeModal(selector) {
+      const popup = document.querySelector(selector);
       popup.classList.remove('show');
       document.body.classList.remove('overflow');
     }
 
-    trigger.forEach(elem => {
-      elem.addEventListener('click', e => {
+    trigger.forEach(item => {
+      item.addEventListener('click', e => {
         if (e.target) {
           e.preventDefault();
         }
@@ -14058,7 +14062,8 @@ const modals = () => {
     });
     close.addEventListener('click', () => {
       closeModal(modalSelector);
-    });
+    }); // Скрытие попапа при нажатии вне попапа
+
     modal.addEventListener('click', e => {
       if (e.target === modal) {
         closeModal(modalSelector);
@@ -14076,6 +14081,59 @@ const modals = () => {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (modals);
+
+/***/ }),
+
+/***/ "./src/js/modules/tabs.js":
+/*!********************************!*\
+  !*** ./src/js/modules/tabs.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const tabs = (tabsParentSelector, tabsSelector, tabsContentSelector, activeClass) => {
+  const tabsParent = document.querySelector(tabsParentSelector);
+  const tab = document.querySelectorAll(tabsSelector);
+  const tabsContent = document.querySelectorAll(tabsContentSelector);
+
+  function hideTabsContent() {
+    tabsContent.forEach(item => {
+      item.classList.add('hide');
+      item.classList.remove('show');
+    });
+    tab.forEach(item => {
+      item.classList.remove(activeClass);
+    });
+  }
+
+  function showTabsContent() {
+    let i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    tabsContent[i].classList.add('show', 'fade');
+    tabsContent[i].classList.remove('hide');
+    tab[i].classList.add(activeClass);
+  }
+
+  tabsParent.addEventListener('click', e => {
+    const {
+      target
+    } = e;
+
+    if (target && target.closest(tabsSelector)) {
+      tab.forEach((item, i) => {
+        if (target === item || target.closest(tabsSelector) === item) {
+          hideTabsContent();
+          showTabsContent(i);
+        }
+      });
+    }
+  });
+  hideTabsContent();
+  showTabsContent();
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (tabs);
 
 /***/ }),
 
