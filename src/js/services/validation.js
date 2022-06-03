@@ -2,15 +2,25 @@ const validationPhoneInput = (inputSelector) => {
   const inputs = document.querySelectorAll(inputSelector);
 
   inputs.forEach((input) => {
+    input.addEventListener('input', () => {
+      input.value = input.value.replace(/\D/, '');
+    });
+  });
+};
+
+const OldvalidationPhoneInput = (inputSelector) => {
+  const inputs = document.querySelectorAll(inputSelector);
+
+  inputs.forEach((input) => {
     input.addEventListener('keydown', function (event) {
       // Разрешаем: backspace, delete, tab и escape
       if (
-        event.keyCode == 46 ||
-        event.keyCode == 8 ||
-        event.keyCode == 9 ||
-        event.keyCode == 27 ||
+        event.keyCode === 46 ||
+        event.keyCode === 8 ||
+        event.keyCode === 9 ||
+        event.keyCode === 27 ||
         // Разрешаем: Ctrl+A
-        (event.keyCode == 65 && event.ctrlKey === true) ||
+        (event.keyCode === 65 && event.ctrlKey === true) ||
         // Разрешаем: home, end, влево, вправо
         (event.keyCode >= 35 && event.keyCode <= 39)
       ) {
@@ -29,4 +39,4 @@ const validationPhoneInput = (inputSelector) => {
   });
 };
 
-export default validationPhoneInput;
+export { validationPhoneInput, OldvalidationPhoneInput };
