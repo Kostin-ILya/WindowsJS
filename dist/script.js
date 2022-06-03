@@ -14012,14 +14012,88 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_slider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/slider */ "./src/js/modules/slider.js");
 /* harmony import */ var _modules_modals__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/modals */ "./src/js/modules/modals.js");
 /* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/tabs */ "./src/js/modules/tabs.js");
+/* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./src/js/modules/forms.js");
+
 
 
 
 window.addEventListener('DOMContentLoaded', () => {
-  Object(_modules_modals__WEBPACK_IMPORTED_MODULE_1__["default"])();
+  'use strict';
+
+  const modalTimerId = setTimeout(() => {
+    document.querySelector('.popup').classList.add('show');
+    document.body.classList.add('overflow');
+  }, 50000);
+  Object(_modules_modals__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup_engineer_btn', '.popup_engineer', '.popup_engineer .popup_close', modalTimerId);
+  Object(_modules_modals__WEBPACK_IMPORTED_MODULE_1__["default"])('.phone_link', '.popup', '.popup .popup_close', modalTimerId);
+  Object(_modules_modals__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup_calc_btn', '.popup_calc', '.popup_calc_close', modalTimerId);
+  Object(_modules_modals__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup_calc_button', '.popup_calc_profile', '.popup_calc_profile_close');
+  Object(_modules_modals__WEBPACK_IMPORTED_MODULE_1__["default"])('.popup_calc_profile_button', '.popup_calc_end', '.popup_calc_end_close');
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.glazing_slider', '.glazing_block', '.glazing_content', 'after_click');
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.decoration_slider', '.no_click', '.decoration_content > div >div', 'after_click');
+  Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.balcon_icons', '.balcon_icons_img', '.big_img>img', 'do_image_more', 'showInline');
+  Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])('.form');
 });
+
+/***/ }),
+
+/***/ "./src/js/modules/forms.js":
+/*!*********************************!*\
+  !*** ./src/js/modules/forms.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/services */ "./src/js/services/services.js");
+/* harmony import */ var _services_validation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/validation */ "./src/js/services/validation.js");
+
+
+
+const formsModule = formSelector => {
+  const forms = document.querySelectorAll(formSelector);
+  const messages = {
+    loading: 'assets/img/form/spinner.svg',
+    success: 'Спасибо! Ожидайте, мы с Вами свяжемся',
+    failure: 'Что-то пошло не так'
+  };
+
+  function showStatusMessage(message) {
+    const statusMessage = document.createElement('div');
+    statusMessage.classList.add('status');
+    statusMessage.textContent = message;
+    setTimeout(() => {
+      statusMessage.remove();
+    }, 5000);
+    return statusMessage;
+  }
+
+  forms.forEach(form => {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const json = JSON.stringify(Object.fromEntries(formData.entries()));
+      const statusLoadingImg = document.createElement('img');
+      statusLoadingImg.src = messages.loading;
+      statusLoadingImg.classList.add('statusLoadingImg');
+      form.append(statusLoadingImg);
+      Object(_services_services__WEBPACK_IMPORTED_MODULE_0__["postData"])('https://jsonplaceholder.typicode.com/posts', json).then(data => {
+        console.log(data);
+        statusLoadingImg.remove();
+        form.append(showStatusMessage(messages.success));
+      }).catch(() => {
+        statusLoadingImg.remove();
+        form.append(showStatusMessage(messages.failure));
+      }).finally(() => {
+        form.reset();
+      });
+    });
+  });
+  Object(_services_validation__WEBPACK_IMPORTED_MODULE_1__["validationPhoneInput"])('[name="user_phone"]');
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (formsModule);
 
 /***/ }),
 
@@ -14032,55 +14106,51 @@ window.addEventListener('DOMContentLoaded', () => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-const popupModule = () => {
-  const modalTimerId = setTimeout(() => {
-    document.querySelector('.popup').classList.add('show');
-    document.body.classList.add('overflow');
-  }, 600000);
+const modalsModule = function (triggerSelector, modalSelector, closeSelector, openModalTimer) {
+  let closeClickOverlay = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
+  const trigger = document.querySelectorAll(triggerSelector);
+  const modal = document.querySelector(modalSelector);
+  const close = document.querySelector(closeSelector);
+  const windows = document.querySelectorAll('[data-modal]');
 
-  function bindModal(triggerSelector, modalSelector, closeSelector) {
-    const trigger = document.querySelectorAll(triggerSelector);
-    const modal = document.querySelector(modalSelector);
-    const close = document.querySelector(closeSelector);
-
-    function closeModal(selector) {
-      const popup = document.querySelector(selector);
-      popup.classList.remove('show');
-      document.body.classList.remove('overflow');
-    }
-
-    trigger.forEach(item => {
-      item.addEventListener('click', e => {
-        if (e.target) {
-          e.preventDefault();
-        }
-
-        modal.classList.add('show');
-        document.body.classList.add('overflow');
-        clearTimeout(modalTimerId);
-      });
+  function closeAllModal() {
+    windows.forEach(item => {
+      item.classList.remove('show');
     });
-    close.addEventListener('click', () => {
-      closeModal(modalSelector);
-    }); // Скрытие попапа при нажатии вне попапа
-
-    modal.addEventListener('click', e => {
-      if (e.target === modal) {
-        closeModal(modalSelector);
-      }
-    });
-    document.addEventListener('keydown', e => {
-      if (e.code === 'Escape' && modal.classList.contains('show')) {
-        closeModal(modalSelector);
-      }
-    });
+    document.body.classList.remove('overflow');
   }
 
-  bindModal('.popup_engineer_btn', '.popup_engineer', '.popup_engineer .popup_close');
-  bindModal('.phone_link', '.popup', '.popup .popup_close');
+  close.addEventListener('click', () => {
+    closeAllModal();
+  }); // Скрытие модалки при нажатии на оверлей
+
+  modal.addEventListener('click', e => {
+    if (closeClickOverlay) {
+      if (e.target === modal) {
+        closeAllModal();
+      }
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.code === 'Escape' && modal.classList.contains('show')) {
+      closeAllModal();
+    }
+  });
+  trigger.forEach(item => {
+    item.addEventListener('click', e => {
+      if (e.target) {
+        e.preventDefault();
+      }
+
+      closeAllModal();
+      modal.classList.add('show');
+      document.body.classList.add('overflow');
+      clearTimeout(openModalTimer);
+    });
+  });
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (popupModule);
+/* harmony default export */ __webpack_exports__["default"] = (modalsModule);
 
 /***/ }),
 
@@ -14181,7 +14251,8 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-const tabsModule = (tabsParentSelector, tabsSelector, tabsContentSelector, activeClass) => {
+const tabsModule = function (tabsParentSelector, tabsSelector, tabsContentSelector, activeClass) {
+  let displayClass = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'show';
   const tabsParent = document.querySelector(tabsParentSelector);
   const tabs = document.querySelectorAll(tabsSelector);
   const tabsContent = document.querySelectorAll(tabsContentSelector);
@@ -14189,7 +14260,7 @@ const tabsModule = (tabsParentSelector, tabsSelector, tabsContentSelector, activ
   function hideTabsContent() {
     tabsContent.forEach(item => {
       item.classList.add('hide');
-      item.classList.remove('show');
+      item.classList.remove(displayClass);
     });
     tabs.forEach(item => {
       item.classList.remove(activeClass);
@@ -14198,7 +14269,7 @@ const tabsModule = (tabsParentSelector, tabsSelector, tabsContentSelector, activ
 
   function showTabsContent() {
     let i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    tabsContent[i].classList.add('show', 'fade');
+    tabsContent[i].classList.add(displayClass, 'fade');
     tabsContent[i].classList.remove('hide');
     tabs[i].classList.add(activeClass);
   }
@@ -14222,6 +14293,75 @@ const tabsModule = (tabsParentSelector, tabsSelector, tabsContentSelector, activ
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (tabsModule);
+
+/***/ }),
+
+/***/ "./src/js/services/services.js":
+/*!*************************************!*\
+  !*** ./src/js/services/services.js ***!
+  \*************************************/
+/*! exports provided: postData */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "postData", function() { return postData; });
+const postData = async (url, data) => {
+  const result = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: data
+  });
+  return await result.json();
+};
+
+
+
+/***/ }),
+
+/***/ "./src/js/services/validation.js":
+/*!***************************************!*\
+  !*** ./src/js/services/validation.js ***!
+  \***************************************/
+/*! exports provided: validationPhoneInput, OldvalidationPhoneInput */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validationPhoneInput", function() { return validationPhoneInput; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OldvalidationPhoneInput", function() { return OldvalidationPhoneInput; });
+const validationPhoneInput = inputSelector => {
+  const inputs = document.querySelectorAll(inputSelector);
+  inputs.forEach(input => {
+    input.addEventListener('input', () => {
+      input.value = input.value.replace(/\D/, '');
+    });
+  });
+};
+
+const OldvalidationPhoneInput = inputSelector => {
+  const inputs = document.querySelectorAll(inputSelector);
+  inputs.forEach(input => {
+    input.addEventListener('keydown', function (event) {
+      // Разрешаем: backspace, delete, tab и escape
+      if (event.keyCode === 46 || event.keyCode === 8 || event.keyCode === 9 || event.keyCode === 27 || // Разрешаем: Ctrl+A
+      event.keyCode === 65 && event.ctrlKey === true || // Разрешаем: home, end, влево, вправо
+      event.keyCode >= 35 && event.keyCode <= 39) {
+        // Ничего не делаем
+        return;
+      } else {
+        // Запрещаем все, кроме цифр на основной клавиатуре, а так же Num-клавиатуре
+        if ((event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+          event.preventDefault();
+        }
+      }
+    });
+  });
+};
+
+
 
 /***/ })
 

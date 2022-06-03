@@ -11,6 +11,6 @@
   },
   "rules": {
     "linebreak-style": "off",
-    "comma-dangle": ["error", { "functions": "never" }]
+    "comma-dangle": ["error", { "functions": "ignore", "objects": "ignore" }]
   }
 }
