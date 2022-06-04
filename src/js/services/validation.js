@@ -1,9 +1,9 @@
-const validationPhoneInput = (inputSelector) => {
+const validationNumInput = (inputSelector) => {
   const inputs = document.querySelectorAll(inputSelector);
 
-  inputs.forEach((input) => {
-    input.addEventListener('input', () => {
-      input.value = input.value.replace(/\D/, '');
+  inputs.forEach((item) => {
+    item.addEventListener('input', () => {
+      item.value = item.value.replace(/\D/, '');
     });
   });
 };
@@ -39,4 +39,4 @@ const OldvalidationPhoneInput = (inputSelector) => {
   });
 };
 
-export { validationPhoneInput, OldvalidationPhoneInput };
+export { validationNumInput, OldvalidationPhoneInput };
