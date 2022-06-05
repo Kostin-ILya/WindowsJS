@@ -2,7 +2,7 @@ import { postData } from '../services/services';
 import { validationNumInput } from '../services/validation';
 import { closeAllModal } from './modals';
 
-const formsModule = () => {
+const formsModule = (state) => {
   function bindForm(formSelector) {
     const forms = document.querySelectorAll(formSelector);
     const messages = {
@@ -23,31 +23,39 @@ const formsModule = () => {
       return statusMessage;
     }
 
-    forms.forEach((form) => {
-      form.addEventListener('submit', (e) => {
+    forms.forEach((item) => {
+      item.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const formData = new FormData(form);
-        const json = JSON.stringify(Object.fromEntries(formData.entries()));
+        const formData = new FormData(item);
+        if (item.dataset.calc === 'end') {
+          for (let key in state) {
+            formData.append(key, state[key]);
+          }
+        }
 
         const statusLoadingImg = document.createElement('img');
         statusLoadingImg.src = messages.loading;
         statusLoadingImg.classList.add('statusLoadingImg');
-        form.append(statusLoadingImg);
+        item.append(statusLoadingImg);
 
+        const json = JSON.stringify(Object.fromEntries(formData.entries()));
         postData('https://jsonplaceholder.typicode.com/posts', json)
           .then((data) => {
             console.log(data);
             statusLoadingImg.remove();
-            form.append(showStatusMessage(messages.success));
+            item.append(showStatusMessage(messages.success));
           })
           .catch(() => {
             statusLoadingImg.remove();
-            form.append(showStatusMessage(messages.failure));
+            item.append(showStatusMessage(messages.failure));
           })
           .finally(() => {
-            form.reset();
+            item.reset();
             setTimeout(closeAllModal, 3000);
+            for (let key in state) {
+              delete state[key];
+            }
           });
       });
     });

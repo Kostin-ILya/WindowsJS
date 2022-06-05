@@ -11,6 +11,8 @@
   },
   "rules": {
     "linebreak-style": "off",
-    "comma-dangle": ["error", { "functions": "ignore", "objects": "ignore" }]
+    "comma-dangle": ["error", { "functions": "ignore", "objects": "ignore" }],
+    "no-param-reassign": ["error", { "props": false }]
+    // "no-unused-expressions": ["error", { "allowTernary": true }]
   }
 }

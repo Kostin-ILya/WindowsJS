@@ -14013,6 +14013,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_modals__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/modals */ "./src/js/modules/modals.js");
 /* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/tabs */ "./src/js/modules/tabs.js");
 /* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./src/js/modules/forms.js");
+/* harmony import */ var _modules_changeModalState__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/changeModalState */ "./src/js/modules/changeModalState.js");
+
 
 
 
@@ -14020,10 +14022,76 @@ __webpack_require__.r(__webpack_exports__);
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
+  const modalState = {};
+  Object(_modules_changeModalState__WEBPACK_IMPORTED_MODULE_4__["default"])(modalState);
   Object(_modules_modals__WEBPACK_IMPORTED_MODULE_1__["modalsModule"])();
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])();
-  Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])();
+  Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])(modalState);
 });
+
+/***/ }),
+
+/***/ "./src/js/modules/changeModalState.js":
+/*!********************************************!*\
+  !*** ./src/js/modules/changeModalState.js ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _services_validation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/validation */ "./src/js/services/validation.js");
+
+
+const changeModalStateModule = state => {
+  const windowForm = document.querySelectorAll('.balcon_icons_img');
+  const windowWidth = document.querySelectorAll('#width');
+  const windowHeight = document.querySelectorAll('#height');
+  const windowType = document.querySelectorAll('#view_type');
+  const windowProfile = document.querySelectorAll('.checkbox');
+  Object(_services_validation__WEBPACK_IMPORTED_MODULE_0__["validationNumInput"])('#height');
+  Object(_services_validation__WEBPACK_IMPORTED_MODULE_0__["validationNumInput"])('#width');
+
+  function bindActionToElems(event, elem, prop) {
+    elem.forEach((item, i) => {
+      item.addEventListener(event, () => {
+        switch (item.nodeName) {
+          case 'SPAN':
+            state[prop] = i;
+            break;
+
+          case 'INPUT':
+            if (item.getAttribute('type') === 'checkbox') {
+              state[prop] = i === 0 ? 'Cold' : 'Warm';
+              elem.forEach((checkbox, index) => {
+                if (index !== i) {
+                  checkbox.checked = false;
+                }
+              });
+            } else {
+              state[prop] = item.value;
+            }
+
+            break;
+
+          case 'SELECT':
+            state[prop] = item.value;
+          // no default
+        }
+
+        console.log(state);
+      });
+    });
+  }
+
+  bindActionToElems('click', windowForm, 'form');
+  bindActionToElems('input', windowWidth, 'width');
+  bindActionToElems('input', windowHeight, 'height');
+  bindActionToElems('change', windowType, 'type');
+  bindActionToElems('change', windowProfile, 'profile');
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (changeModalStateModule);
 
 /***/ }),
 
@@ -14043,7 +14111,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const formsModule = () => {
+const formsModule = state => {
   function bindForm(formSelector) {
     const forms = document.querySelectorAll(formSelector);
     const messages = {
@@ -14062,25 +14130,36 @@ const formsModule = () => {
       return statusMessage;
     }
 
-    forms.forEach(form => {
-      form.addEventListener('submit', e => {
+    forms.forEach(item => {
+      item.addEventListener('submit', e => {
         e.preventDefault();
-        const formData = new FormData(form);
-        const json = JSON.stringify(Object.fromEntries(formData.entries()));
+        const formData = new FormData(item);
+
+        if (item.dataset.calc === 'end') {
+          for (let key in state) {
+            formData.append(key, state[key]);
+          }
+        }
+
         const statusLoadingImg = document.createElement('img');
         statusLoadingImg.src = messages.loading;
         statusLoadingImg.classList.add('statusLoadingImg');
-        form.append(statusLoadingImg);
+        item.append(statusLoadingImg);
+        const json = JSON.stringify(Object.fromEntries(formData.entries()));
         Object(_services_services__WEBPACK_IMPORTED_MODULE_0__["postData"])('https://jsonplaceholder.typicode.com/posts', json).then(data => {
           console.log(data);
           statusLoadingImg.remove();
-          form.append(showStatusMessage(messages.success));
+          item.append(showStatusMessage(messages.success));
         }).catch(() => {
           statusLoadingImg.remove();
-          form.append(showStatusMessage(messages.failure));
+          item.append(showStatusMessage(messages.failure));
         }).finally(() => {
-          form.reset();
+          item.reset();
           setTimeout(_modals__WEBPACK_IMPORTED_MODULE_2__["closeAllModal"], 3000);
+
+          for (let key in state) {
+            delete state[key];
+          }
         });
       });
     });
