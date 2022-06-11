@@ -14015,6 +14015,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./src/js/modules/forms.js");
 /* harmony import */ var _modules_changeModalState__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/changeModalState */ "./src/js/modules/changeModalState.js");
 /* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/timer */ "./src/js/modules/timer.js");
+/* harmony import */ var _modules_images__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/images */ "./src/js/modules/images.js");
+
 
 
 
@@ -14030,6 +14032,7 @@ window.addEventListener('DOMContentLoaded', () => {
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])();
   Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])(modalState);
   Object(_modules_timer__WEBPACK_IMPORTED_MODULE_5__["default"])('#timer', '2022-10-01');
+  Object(_modules_images__WEBPACK_IMPORTED_MODULE_6__["default"])();
 });
 
 /***/ }),
@@ -14173,6 +14176,45 @@ const formsModule = state => {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (formsModule);
+
+/***/ }),
+
+/***/ "./src/js/modules/images.js":
+/*!**********************************!*\
+  !*** ./src/js/modules/images.js ***!
+  \**********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const imagesModule = () => {
+  const imgPopup = document.createElement('div');
+  const imgParentSection = document.querySelector('.works');
+  const bigImg = document.createElement('img');
+  imgParentSection.append(imgPopup);
+  imgPopup.append(bigImg);
+  imgPopup.classList.add('popup__img');
+  imgParentSection.addEventListener('click', e => {
+    e.preventDefault();
+    const {
+      target
+    } = e;
+
+    if (target && target.classList.contains('preview')) {
+      imgPopup.classList.add('show_flex');
+      document.body.classList.add('overflow');
+      bigImg.src = target.parentNode.href; // у фото родитель ссылка с верным путем к фото
+    }
+
+    if (target && target.matches('.popup__img')) {
+      imgPopup.classList.remove('show_flex');
+      document.body.classList.remove('overflow');
+    }
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (imagesModule);
 
 /***/ }),
 
@@ -14388,7 +14430,7 @@ const tabsModule = () => {
 
   bindTabs('.glazing_slider', '.glazing_block', '.glazing_content', 'after_click');
   bindTabs('.decoration_slider', '.no_click', '.decoration_content > div >div', 'after_click');
-  bindTabs('.balcon_icons', '.balcon_icons_img', '.big_img>img', 'do_image_more', 'showInline');
+  bindTabs('.balcon_icons', '.balcon_icons_img', '.big_img>img', 'do_image_more', 'show_inline');
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (tabsModule);

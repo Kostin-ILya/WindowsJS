@@ -60,7 +60,7 @@ const tabsModule = () => {
     '.balcon_icons_img',
     '.big_img>img',
     'do_image_more',
-    'showInline'
+    'show_inline'
   );
 };
 
