@@ -14248,6 +14248,21 @@ function closeAllModal() {
     item.classList.remove('show');
   });
   document.body.classList.remove('overflow');
+  document.body.style.marginRight = '';
+}
+
+function calcScroll() {
+  const div = document.createElement('div');
+  div.style.cssText = `
+  width: 50px;
+  height: 50px;
+  overflow: scroll;
+  visivility: hidden;  
+ `;
+  document.body.append(div);
+  const scrollWidth = div.offsetWidth - div.clientWidth;
+  div.remove();
+  return scrollWidth;
 }
 
 const modalsModule = state => {
@@ -14299,6 +14314,8 @@ const modalsModule = state => {
         closeAllModal();
         modal.classList.add('show');
         document.body.classList.add('overflow');
+        document.body.style.marginRight = `${calcScroll()}px`; // Для того чтобы не прыгала страница
+
         clearTimeout(modalTimerId);
       });
     });
