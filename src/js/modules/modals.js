@@ -6,7 +6,7 @@ function closeAllModal() {
   document.body.classList.remove('overflow');
 }
 
-const modalsModule = () => {
+const modalsModule = (state) => {
   const modalTimerId = setTimeout(() => {
     document.querySelector('.popup').classList.add('show');
     document.body.classList.add('overflow');
@@ -44,6 +44,17 @@ const modalsModule = () => {
 
     trigger.forEach((item) => {
       item.addEventListener('click', (e) => {
+        if (e.target.classList.contains('popup_calc_button')) {
+          if (!state.width || !state.height) {
+            return;
+          }
+        }
+        if (e.target.classList.contains('popup_calc_profile_button')) {
+          if (!state.profile) {
+            return;
+          }
+        }
+
         if (e.target) {
           e.preventDefault();
         }

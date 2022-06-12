@@ -14026,9 +14026,12 @@ __webpack_require__.r(__webpack_exports__);
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
-  const modalState = {};
+  const modalState = {
+    form: 0,
+    type: 'tree'
+  };
   Object(_modules_changeModalState__WEBPACK_IMPORTED_MODULE_4__["default"])(modalState);
-  Object(_modules_modals__WEBPACK_IMPORTED_MODULE_1__["modalsModule"])();
+  Object(_modules_modals__WEBPACK_IMPORTED_MODULE_1__["modalsModule"])(modalState);
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])();
   Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])(modalState);
   Object(_modules_timer__WEBPACK_IMPORTED_MODULE_5__["default"])('#timer', '2022-10-01');
@@ -14166,6 +14169,17 @@ const formsModule = state => {
           for (let key in state) {
             delete state[key];
           }
+
+          state.form = 0;
+          state.type = 'tree';
+          console.log(state);
+          document.querySelectorAll('.form-control').forEach(input => {
+            input.value = '';
+            document.querySelectorAll('.balcon_icons_img').forEach(item => {
+              item.classList.remove('do_image_more');
+            });
+            document.querySelector('.balcon_icons_img').classList.add('do_image_more');
+          });
         });
       });
     });
@@ -14236,7 +14250,7 @@ function closeAllModal() {
   document.body.classList.remove('overflow');
 }
 
-const modalsModule = () => {
+const modalsModule = state => {
   const modalTimerId = setTimeout(() => {
     document.querySelector('.popup').classList.add('show');
     document.body.classList.add('overflow');
@@ -14266,6 +14280,18 @@ const modalsModule = () => {
     });
     trigger.forEach(item => {
       item.addEventListener('click', e => {
+        if (e.target.classList.contains('popup_calc_button')) {
+          if (!state.width || !state.height) {
+            return;
+          }
+        }
+
+        if (e.target.classList.contains('popup_calc_profile_button')) {
+          if (!state.profile) {
+            return;
+          }
+        }
+
         if (e.target) {
           e.preventDefault();
         }

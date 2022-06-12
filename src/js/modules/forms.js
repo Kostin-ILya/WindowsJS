@@ -56,6 +56,18 @@ const formsModule = (state) => {
             for (let key in state) {
               delete state[key];
             }
+            state.form = 0;
+            state.type = 'tree';
+            console.log(state);
+            document.querySelectorAll('.form-control').forEach((input) => {
+              input.value = '';
+              document.querySelectorAll('.balcon_icons_img').forEach((item) => {
+                item.classList.remove('do_image_more');
+              });
+              document
+                .querySelector('.balcon_icons_img')
+                .classList.add('do_image_more');
+            });
           });
       });
     });

@@ -9,10 +9,13 @@ import imagesModule from './modules/images';
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
-  const modalState = {};
+  const modalState = {
+    form: 0,
+    type: 'tree',
+  };
   changeModalStateModule(modalState);
 
-  modalsModule();
+  modalsModule(modalState);
   tabsModule();
   formsModule(modalState);
   timerModule('#timer', '2022-10-01');
