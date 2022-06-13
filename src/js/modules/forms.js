@@ -52,7 +52,9 @@ const formsModule = (state) => {
           })
           .finally(() => {
             item.reset();
-            setTimeout(closeAllModal, 3000);
+            setTimeout(() => {
+              closeAllModal('[data-modal]', 'show', 'overflow');
+            }, 3000);
             for (let key in state) {
               delete state[key];
             }

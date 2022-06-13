@@ -15,7 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
   };
   changeModalStateModule(modalState);
 
-  modalsModule(modalState);
+  modalsModule('show', 3000, modalState);
   tabsModule();
   formsModule(modalState);
   timerModule('#timer', '2022-10-01');

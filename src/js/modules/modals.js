@@ -1,32 +1,31 @@
-function closeAllModal() {
-  document.querySelectorAll('[data-modal]').forEach((item) => {
-    item.classList.remove('show');
+function closeAllModal(selector, activeClass, overflowClass) {
+  document.querySelectorAll(selector).forEach((item) => {
+    item.classList.remove(activeClass);
   });
 
-  document.body.classList.remove('overflow');
+  document.body.classList.remove(overflowClass);
   document.body.style.marginRight = '';
 }
 
-function calcScroll() {
-  const div = document.createElement('div');
-  div.style.cssText = `
-  width: 50px;
-  height: 50px;
-  overflow: scroll;
-  visivility: hidden;  
- `;
-  document.body.append(div);
-
-  const scrollWidth = div.offsetWidth - div.clientWidth;
-  div.remove();
-  return scrollWidth;
-}
-
-const modalsModule = (state) => {
-  const modalTimerId = setTimeout(() => {
-    document.querySelector('.popup').classList.add('show');
+const modalsModule = (activeClass, showModalTimer, state) => {
+  const showModalByTime = setTimeout(() => {
+    document.querySelector('.popup').classList.add(activeClass);
     document.body.classList.add('overflow');
-  }, 600000);
+  }, showModalTimer);
+  function calcScroll() {
+    const div = document.createElement('div');
+    div.style.cssText = `
+    width: 50px;
+    height: 50px;
+    overflow: scroll;
+    visivility: hidden;  
+   `;
+    document.body.append(div);
+
+    const scrollWidth = div.offsetWidth - div.clientWidth;
+    div.remove();
+    return scrollWidth;
+  }
 
   function bindModal(
     triggerSelector,
@@ -39,22 +38,21 @@ const modalsModule = (state) => {
     const close = document.querySelector(closeSelector);
 
     close.addEventListener('click', () => {
-      closeAllModal();
+      closeAllModal('[data-modal]', 'show', 'overflow');
     });
 
     // Скрытие модалки при нажатии на оверлей
     modal.addEventListener('click', (e) => {
-      //  if (e.target === modal && closeClickOverlay)
-      if (closeClickOverlay) {
+      if (e.target === modal && closeClickOverlay) {
         if (e.target === modal) {
-          closeAllModal();
+          closeAllModal('[data-modal]', 'show', 'overflow');
         }
       }
     });
 
     document.addEventListener('keydown', (e) => {
-      if (e.code === 'Escape' && modal.classList.contains('show')) {
-        closeAllModal();
+      if (e.code === 'Escape' && modal.classList.contains(activeClass)) {
+        closeAllModal('[data-modal]', 'show', 'overflow');
       }
     });
 
@@ -74,12 +72,12 @@ const modalsModule = (state) => {
         if (e.target) {
           e.preventDefault();
         }
-        closeAllModal();
+        closeAllModal('[data-modal]', 'show', 'overflow');
 
-        modal.classList.add('show');
+        modal.classList.add(activeClass);
         document.body.classList.add('overflow');
         document.body.style.marginRight = `${calcScroll()}px`; // Для того чтобы не прыгала страница
-        clearTimeout(modalTimerId);
+        clearTimeout(showModalByTime);
       });
     });
   }
@@ -94,7 +92,8 @@ const modalsModule = (state) => {
   bindModal(
     '.popup_calc_button',
     '.popup_calc_profile',
-    '.popup_calc_profile_close'
+    '.popup_calc_profile_close',
+    false
   );
   bindModal(
     '.popup_calc_profile_button',
